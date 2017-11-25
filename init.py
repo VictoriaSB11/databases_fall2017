@@ -3,15 +3,16 @@ import pymysql.cursor
 
 app = Flask(__name__)
 
-conn = pymysql.connect()
+conn = pymysql.connect(host='localhost',user='root',password='root'db='meetup',charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
+	
 
 @app.route('/')
 def hello():
-	return render_template('index.html')
+	return render_template('templates/index.html')
 
 @app.route('/login')
 def login():
-	return render_template('login.html')
+	return render_template("templates/Login/index.html")
 
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
@@ -35,8 +36,11 @@ def loginAuth():
 	else:
 		#returns an error message to the html page
 		error = 'Invalid login or username'
-		return render_template('login.html', error=error)
+		return render_template('templates/Login/index.html', error=error)
 
+
+
+app.secret_key='databases'
 if __name__=='__main__':
-	app.run()
+	app.run('127.0.0.1',5000,debug=True)
 
