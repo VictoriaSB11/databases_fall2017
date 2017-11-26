@@ -8,10 +8,10 @@ app = Flask(__name__)
 
 config = {
   'user': 'root',
-  'password': 'root',
+  'passwd': 'root',
   'host': 'localhost',
   'port': 3306,
-  'database': 'prichosha',
+  'db': 'prichosha',
   'raise_on_warnings': True,
 }
 
