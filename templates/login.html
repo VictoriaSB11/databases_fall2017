@@ -13,9 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
     <style type="text/css">
-    body {
-        background: url(doodles.png) no-repeat center center fixed;
-    }
+    
     </style>
 </head>
 
@@ -23,7 +21,7 @@
     <div class="container">
         <div class="wrapper">
             <form action="/loginAuth" method="post" name="Login_Form" class="form-signin">
-                <h3 class="form-signin-heading">PriCoSha | Login</h3>
+                <h3 style="color: black" class="form-signin-heading">PriCoSha | Login</h3>
                 <hr class="colorgraph">
                 <br>
                 <input type="text" class="form-control" name="username" placeholder="username" required autofocus />
