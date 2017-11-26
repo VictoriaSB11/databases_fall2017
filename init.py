@@ -1,27 +1,34 @@
 #Import falsk libraruies and mySQL
-from flask import Flask, render_template, request, session, redirect, url_for
+from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
 
 app = Flask(__name__)
 
 #Configure MySQL
-conn = pymysql.connect(host='localhost',
-						user='root',
-						password='root',
-						db='meetup',
-						charset='utf8mb4',
-						cursorclass=pymysql.cursors.DictCursor)
+# conn = pymysql.connect(host='localhost',
+# 						user='root',
+# 						password='root',
+# 						db='meetup',
+# 						charset='utf8mb4',
+# 						cursorclass=pymysql.cursors.DictCursor)
 	
 
 #Define a route to 'Hello'/the Home page
 @app.route('/')
 def hello():
-	return render_template('templates/index.html')
+	return render_template('index.html')
 
+#Route for the login page
 @app.route('/login')
 def login():
-	return render_template("templates/Login/index.html")
+	return render_template("login.html")
 
+#route for the registration page
+@app.route('/register')
+def register():
+	return render_template('register.html')
+
+#Authenticate the login, check for username and password in db
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
 	username = request.form('username')
@@ -45,8 +52,6 @@ def loginAuth():
 		#returns an error message to the html page
 		error = 'Invalid login or username'
 		return render_template('templates/Login/index.html', error=error)
-
-
 
 app.secret_key = 'secret key 123'
 #Run the app on local host port 5000
