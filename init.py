@@ -1,16 +1,21 @@
-#Import falsk libraruies and mySQL
+#Import flask libraries and mySQL
 from flask import Flask, render_template, request, session, url_for, redirect
-import pymysql.cursors
+import mysql.connector
 
 app = Flask(__name__)
 
 #Configure MySQL
-# conn = pymysql.connect(host='localhost',
-# 						user='root',
-# 						password='root',
-# 						db='meetup',
-# 						charset='utf8mb4',
-# 						cursorclass=pymysql.cursors.DictCursor)
+
+config = {
+  'user': 'root',
+  'password': 'root',
+  'host': 'localhost',
+  'port': 3306,
+  'database': 'prichosha',
+  'raise_on_warnings': True,
+}
+
+link = mysql.connector.connect(**config)
 	
 
 #Define a route to 'Hello'/the Home page
@@ -53,6 +58,34 @@ def loginAuth():
 		error = 'Invalid login or username'
 		return render_template('templates/Login/index.html', error=error)
 
+#Register and new user for PriChoSha
+@app.route('/registerAuth', methods=['GET', 'POST'])
+def registerAuth():
+	#grabs information from the forms
+	username = request.form['username']
+	password = request.form['password']
+
+	#cursor used to send queries
+	cursor = conn.cursor()
+	#executes query
+	query = 'SELECT * FROM user WHERE username = %s'
+	cursor.execute(query, (username))
+	#stores the results in a variable
+	data = cursor.fetchone()
+	#use fetchall() if you are expecting more than 1 data row
+	error = None
+	if(data):
+		#If the previous query returns data, then user exists
+		error = "This user already exists"
+		return render_template('register.html', error = error)
+	else:
+		ins = 'INSERT INTO user VALUES(%s, %s)'
+		cursor.execute(ins, (username, password))
+		conn.commit()
+		cursor.close()
+		return render_template('index.html')
+
+app.static_folder = 'static'
 app.secret_key = 'secret key 123'
 #Run the app on local host port 5000
 app.secret_key='databases'
