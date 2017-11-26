@@ -1,10 +1,18 @@
+#Import falsk libraruies and mySQL
 from flask import Flask, render_template, request, session, redirect, url_for
-import pymysql.cursor
+import pymysql.cursors
 
 app = Flask(__name__)
 
-conn = pymysql.connect()
+#Configure MySQL
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='root',
+                       db='prichosha',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
 
+#Define a route to 'Hello'/the Home page
 @app.route('/')
 def hello():
 	return render_template('index.html')
@@ -37,6 +45,9 @@ def loginAuth():
 		error = 'Invalid login or username'
 		return render_template('login.html', error=error)
 
+
+app.secret_key = 'secret key 123'
+#Run the app on local host port 5000
 if __name__=='__main__':
-	app.run()
+	app.run('127.0.0.1', 3306, debug = True)
 
