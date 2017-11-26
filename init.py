@@ -1,21 +1,18 @@
 #Import flask libraries and mySQL
+#!/usr/bin/python
 from flask import Flask, render_template, request, session, url_for, redirect
-import mysql.connector
+import pymysql.cursors
 
 app = Flask(__name__)
 
 #Configure MySQL
 
-config = {
-  'user': 'root',
-  'passwd': 'root',
-  'host': 'localhost',
-  'port': 3306,
-  'db': 'prichosha',
-  'raise_on_warnings': True,
-}
-
-link = mysql.connector.connect(**config)
+conn = pymysql.connect(host='localhost',
+                       user='root',
+                       password='password',
+                       db='prichosha',
+                       charset='utf8mb4',
+                       cursorclass=pymysql.cursors.DictCursor)
 	
 
 #Define a route to 'Hello'/the Home page
