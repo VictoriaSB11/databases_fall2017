@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
+    <title>PriCoSha</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
     <style type="text/css">
+    @import url('https://fonts.googleapis.com/css?family=Manuale|Rubik:900');
     body {
         background-image: url(../static/doodles.png);
         background-image: url({{ url_for('static', filename='doodles.png')
@@ -20,21 +21,35 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="wrapper">
-            <form action="/registerAuth" method="post" name="Login_Form" class="form-signin">
-                <h3 style="color:black" class="form-signin-heading">PriCoSha | Register</h3>
-                <hr class="colorgraph">
-                <br>
-                <input type="text" class="form-control" name="fname" placeholder="first name" required />
-                <input type="text" class="form-control" name="lname" placeholder="last name" required />
-                <input type="text" class="form-control" name="new_username" placeholder="new username" required autofocus />
-                <input type="password" class="form-control" name="new_password" placeholder="new password" required />
-                <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Register" type="Submit">Register</button>
-            </form>
-        </div>
+    <div class="centerh1">
+        <form action="/post" method="POST">
+            <h1 style="color: black"> Welcome {{username}}</h1>
+            <hr class="colorgraph">
+            <input type="text" class="form-control" name="blog" placeholder="Say something..." required/> </br>
+            <input type="submit" class="btn btn-primary btn-lg" value="post" />
+        </form>
+        <style type="text/css">
+            table,
+        th,
+        td {
+            border: 2px solid black;
+            color: black;
+        </style>
+        <br>
+        <br>
+        <table class="table table-primary table-hover">
+            <th>Time</th>
+            <th>Post</th>
+            {% for line in posts %}
+            <tr>
+                <td>{{line.ts}}</td>
+                <td>{{line.blog_post}}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
-    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <br>
+    <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>

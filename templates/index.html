@@ -13,21 +13,49 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
     <style type="text/css">
-    @import url('https://fonts.googleapis.com/css?family=Manuale|Rubik:900');
+@import url('https://fonts.googleapis.com/css?family=Manuale|Rubik:900');
+    body {
+        background-image: url(../static/doodles.png);
+        background-image: url({{ url_for('static', filename='doodles.png')
+    }
+}
+)
+}
     </style>
 </head>
 
 <body>
-    <!--VIDEO BACKGROUND-->
-    
+    {% if not message %}
     <!--TYPEWRITER EFFECT -->
     <div class="centerh1">
         <div class="typewriter">
             <h1 style="color:black">PriCoSha</h1>
         </div>
+        <hr class="colorgraph">
         <a href="/login" class="btn btn-primary btn-round-lg btn-lg" role="button">Login</a>
         <a href="/register" class="btn btn-primary btn-round-lg btn-lg" role="button">Register</a>
     </div>
+    {% endif %} {% if message %}
+    <br>
+    <a class="btn btn-danger btn-sm" href="/logout">Logout</a>
+    <a class="btn btn-danger btn-sm" href="/remove_account">Remove Account</a>
+    <br>
+    <br>
+    <div class="centerh1">
+        <h1 style="color: black"> PriCoSha</h1>
+        <hr class="colorgraph">
+        <p style="color: black" class="message">You are logged in {{message}}. You have {{num}} follower(s)</p>
+        <a class="btn btn-primary btn-sm" href="/tweets">View your tweets</a>
+        <a class="btn btn-primary btn-sm" href="/find_people">Find people to follow</a> </br>
+        <p></p>
+        <a class="btn btn-primary btn-sm" href="/unfollow">Unfollow someone</a>
+        <a class="btn btn-primary btn-sm" href="/view_followed">View people you have followed</a> </br>
+        </br>
+    </div>
+    <h4>Your Feed </h4> </br>
+    {% for line in tweets%}
+    <p>{{line}}</p>
+    <hr> {% endfor %} {% endif %}
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
