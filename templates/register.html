@@ -21,13 +21,15 @@
 <body>
     <div class="container">
         <div class="wrapper">
-            <form action="/loginAuth" method="post" name="Login_Form" class="form-signin">
+            <form action="/registerAuth" method="post" name="Login_Form" class="form-signin">
                 <h3 style="color:black"class="form-signin-heading">PriCoSha | Register</h3>
                 <hr class="colorgraph">
                 <br>
+                <input type="text" class="form-control" name="fname" placeholder="first name" required />
+                <input type="text" class="form-control" name="lname" placeholder="last name" required />
                 <input type="text" class="form-control" name="new_username" placeholder="new username" required autofocus />
                 <input type="password" class="form-control" name="new_password" placeholder="new password" required />
-                <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit">Register</button>
+                <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Register" type="Submit">Register</button>
             </form>
         </div>
     </div>
