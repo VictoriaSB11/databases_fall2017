@@ -34,12 +34,12 @@ def register():
 #Authenticate the login, check for username and password in db
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
-	username = request.form('username')
-	password = request.form('password')
+	username = request.form['username']
+	password = request.form['password']
 
 	cursor = conn.cursor()
 
-	query = 'SELECT * FROM Person WHERE username = %s and password = %s'
+	query = 'SELECT * FROM Person WHERE username = %s AND password = %s'
 	cursor.execute(query, (username, password))
 	#stores the results in a variable
 	data = cursor.fetchone()
@@ -84,6 +84,27 @@ def registerAuth():
 		conn.commit()
 		cursor.close()
 		return render_template('index.html')
+
+@app.route('/home')
+def home():
+	username = session['username']
+	cursor = conn.cursor();
+	query = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s ORDER BY timest DESC'
+	cursor.execute(query, (username))
+	data = cursor.fetchall()
+	cursor.close()
+	return render_template('home.html', username=username, posts=data)
+
+@app.route('/post', methods=['GET', 'POST'])
+def post():
+	username = session['username']
+	cursor = conn.cursor();
+	post = request.form['post']
+	query = 'INSERT INTO Content (username, post) VALUES(%s, %s)'
+	cursor.execute(query, (post, username))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('home'))
 
 app.static_folder = 'static'
 app.secret_key = 'secret key 123'
