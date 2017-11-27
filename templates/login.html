@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
     <style type="text/css">
-    
+
     </style>
 </head>
 
@@ -27,6 +27,8 @@
                 <input type="text" class="form-control" name="username" placeholder="username" required autofocus />
                 <input type="password" class="form-control" name="password" placeholder="password" required />
                 <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit">Login</button>
+                {% if error %}
+                <p class="error"><strong>Error:</strong> {{error}}</p> {% endif %}
             </form>
         </div>
     </div>
