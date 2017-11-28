@@ -99,9 +99,10 @@ def home():
 def post():
 	username = session['username']
 	cursor = conn.cursor();
-	post = request.form['post']
-	query = 'INSERT INTO Content (username, post) VALUES(%s, %s)'
-	cursor.execute(query, (post, username))
+	file_path = request.form['image_path']
+	content_name = request.form['content_name']
+	query = 'INSERT INTO Content VALUES(%s, %s, %s)'
+	cursor.execute(query, (username, file_path, content_name, public))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))
