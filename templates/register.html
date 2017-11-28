@@ -26,6 +26,8 @@
                 <input type="text" class="form-control" name="new_username" placeholder="new username" required autofocus />
                 <input type="password" class="form-control" name="new_password" placeholder="new password" required />
                 <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Register" type="Submit">Register</button>
+                {% if error %}
+                <p class="error"><strong>Error:</strong> {{error}}</p> {% endif %}
             </form>
         </div>
     </div>

@@ -37,10 +37,11 @@
     <div class="centerh1">
         <h1 style="color: black"> PriCoSha</h1>
         <hr class="colorgraph">
-        <p style="color: black" class="message">You are logged in {{message}}. You have {{num}} follower(s)</p>
+        <p style="color: black" class="message">You are logged in. You have {{num}} follower(s)</p>
         <a class="btn btn-primary btn-sm" href="/tweets">View your tweets</a>
         <a class="btn btn-primary btn-sm" href="/find_people">Find people to follow</a> </br>
         <p></p>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('home') }}">Make a post</a>
         <a class="btn btn-primary btn-sm" href="/unfollow">Unfollow someone</a>
         <a class="btn btn-primary btn-sm" href="/view_followed">View people you have followed</a> </br>
         </br>
