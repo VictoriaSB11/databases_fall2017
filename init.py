@@ -9,10 +9,10 @@ app = Flask(__name__)
 #Configure MySQL
 
 conn = pymysql.connect(host='localhost',
-					   port=8889,
+					   port=3306,
                        user='root',
-                       passwd='password',
-                       db='prichosha',
+                       passwd='',
+                       db='pricosha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 	
@@ -51,7 +51,7 @@ def loginAuth():
 		#creates a session for the the user
 		#session is a built in
 		session['username'] = username
-		return redirect(url_for('home'))
+		return render_template('index.html',message= not None)
 	else:
 		#returns an error message to the html page
 		error = 'Invalid login or username'
@@ -75,10 +75,11 @@ def registerAuth():
 	data = cursor.fetchone()
 	#use fetchall() if you are expecting more than 1 data row
 	error = None
-	message = not None
+	message=not None
+
 	if(data):
 		#If the previous query returns data, then user exists
-		error = "This user already exists"
+		error = 'This user already exists'
 		return render_template('register.html', error = error)
 	else:
 		ins = 'INSERT INTO Person VALUES(%s, %s, %s, %s)'
@@ -103,12 +104,18 @@ def post():
 	cursor = conn.cursor();
 	file_path = request.files['image_path']
 	content_name = request.form['content_name']
-	public = request.form['options']
-	query = 'INSERT INTO Content VALUES(%s, %s, %s, %s)'
-	cursor.execute(query, (username, file_path.filename, content_name, public))
+	public=request.form['optradio']
+	query = 'INSERT INTO Content(username,file_path,content_name,public) VALUES(%s, %s, %s,%s)'
+	cursor.execute(query, (username, file_path, content_name, public))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))
+
+
+@app.route('/logout')
+def logout():
+	session.pop('username')
+	return redirect('/')
 
 app.static_folder = 'static'
 app.secret_key = 'secret key 123'
