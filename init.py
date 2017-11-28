@@ -118,6 +118,6 @@ def logout():
 app.static_folder = 'static'
 app.secret_key = 'secret key 123'
 #Run the app on local host port 5000
-if __name_w_=='__main__':
+if __name__=='__main__':
 	app.run('127.0.0.1',5000,debug=True)
 
