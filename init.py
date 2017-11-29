@@ -2,7 +2,7 @@
 #!/usr/bin/python
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
-
+from hashlib import sha1
 app = Flask(__name__)
 
 #Configure MySQL
@@ -35,7 +35,7 @@ def register():
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
 	username = request.form['username']
-	password = request.form['password']
+	password = sha1(request.form['password']).hexdigest()
 
 	cursor = conn.cursor()
 
@@ -61,7 +61,7 @@ def loginAuth():
 def registerAuth():
 	#grabs information from the forms
 	username = request.form['new_username']
-	password = request.form['new_password']
+	password = sha1(request.form['new_password']).hexdigest()
 	fname = request.form['fname']
 	lname = request.form['lname']
 
