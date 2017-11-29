@@ -9,10 +9,10 @@ app = Flask(__name__)
 #Configure MySQL
 
 conn = pymysql.connect(host='localhost',
-					   port=3306,
+					   port=8889,
                        user='root',
-                       passwd='',
-                       db='pricosha',
+                       passwd='password',
+                       db='prichosha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 	
@@ -92,7 +92,7 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT Content.timest, content_name, file_path, comment_text FROM Content INNER JOIN Comment ON Content.id = Comment.id WHERE Content.username = %s ORDER BY timest DESC'
+	query = 'SELECT Content.timest, content_name, file_path, comment_text, username_tagger, username_taggee FROM Content NATURAL JOIN Comment NATURAL JOIN Tag WHERE Content.username = %s AND Tag.status = True ORDER BY timest DESC'
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
@@ -105,11 +105,11 @@ def post():
 	file_path = request.files['image_path']
 	content_name = request.form['content_name']
 	public=request.form['optradio']
-	query = 'INSERT INTO Content(username,file_path,content_name,public) VALUES(%s, %s, %s,%s)'
+	query = 'INSERT INTO Content VALUES(%s, %s, %s,%s)'
 	cursor.execute(query, (username, file_path, content_name, public))
 	conn.commit()
 	cursor.close()
-	return redirect(url_for('home'))
+	return redirect(url_for('index'))
 
 
 @app.route('/logout')
