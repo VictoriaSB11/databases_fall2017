@@ -2,7 +2,6 @@
 #!/usr/bin/python
 from flask import Flask, render_template, request, session, url_for, redirect
 import pymysql.cursors
-from hashlib import sha1
 
 app = Flask(__name__)
 
@@ -41,7 +40,7 @@ def loginAuth():
 	cursor = conn.cursor()
 
 	query = 'SELECT * FROM Person WHERE username = %s AND password = %s'
-	cursor.execute(query, (username, sha1(password).hexdigest()))
+	cursor.execute(query, (username, password))
 	#stores the results in a variable
 	data = cursor.fetchone()
 	#use fetchall() if you are expecting more than 1 data row
@@ -76,23 +75,22 @@ def registerAuth():
 	#use fetchall() if you are expecting more than 1 data row
 	error = None
 	message=not None
-
 	if(data):
 		#If the previous query returns data, then user exists
 		error = 'This user already exists'
 		return render_template('register.html', error = error)
 	else:
 		ins = 'INSERT INTO Person VALUES(%s, %s, %s, %s)'
-		cursor.execute(ins, (username, sha1(password).hexdigest(), fname, lname))
+		cursor.execute(ins, (username, password, fname, lname))
 		conn.commit()
 		cursor.close()
-		return render_template('index.html', message=message)
+		return render_template('index.html',message= message)
 
 @app.route('/home')
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT Content.timest, content_name, file_path, comment_text FROM Content INNER JOIN Comment ON Content.id = Comment.id WHERE Content.username = %s ORDER BY timest DESC'
+	query = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s ORDER BY timest DESC'
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
@@ -102,7 +100,7 @@ def home():
 def post():
 	username = session['username']
 	cursor = conn.cursor();
-	file_path = request.files['image_path']
+	file_path = request.form['image_path']
 	content_name = request.form['content_name']
 	public=request.form['optradio']
 	query = 'INSERT INTO Content(username,file_path,content_name,public) VALUES(%s, %s, %s,%s)'
