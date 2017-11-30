@@ -112,7 +112,7 @@ def post():
 	cursor.execute(query, (username, file_path, content_name, public))
 	conn.commit()
 	cursor.close()
-	return redirect(url_for('home'))
+	return redirect(url_for('index'))
 
 
 @app.route('/logout')

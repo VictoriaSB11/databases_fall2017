@@ -24,7 +24,7 @@
             <br>
             <br>
             <input type="text" class="form-control" name="content_name" placeholder="What is this?" required/> </br>
-            <label style="color: black" class="radio-inline">
+           <label style="color: black" class="radio-inline">
                 <input type="radio" name="optradio" value="1">Public
             </label>
             <label style="color: black" class="radio-inline">
@@ -60,8 +60,8 @@
                 <td>{{line.file_path}}</td>
                 <td>{{line.content_name}}</td>
                 <td>{{line.comment}}</td>
-                <td>{{line.username_tagger}}</td>
                 <td>{{line.username_taggee}}</td>
+                <td>{{line.username_tagger}}</td>
             </tr>
             {% endfor %}
         </table>
@@ -69,6 +69,7 @@
     <br>
     <br>
     <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
+    <a href="/profile" class="btn btn-danger btn-sm" role="button">Back to Profile</a>
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
