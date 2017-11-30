@@ -45,9 +45,9 @@
         <br>
         <table style="border-radius: 20px " class="table table-primary table-hover">
             <th style="text-align: center ">Your Groups</th>
-            {% for line in posts %}
+            {% for line in groups %}
             <tr>
-                <td>{{line.timest}}</td>
+                <td>{{line.group_name}}</td>
             </tr>
             {% endfor %}
         </table>

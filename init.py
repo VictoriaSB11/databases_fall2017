@@ -94,7 +94,7 @@ def home():
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
-	return render_template('home.html', username=username, posts=data, ispost=True)
+	return render_template('home.html', username=username, posts=data)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
@@ -108,6 +108,16 @@ def post():
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))
+
+@app.route('/friends')
+def friends():
+	username = session['username']
+	cursor = conn.cursor();
+	query = 'SELECT group_name FROM member WHERE username = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchall()
+	cursor.close()
+	return render_template('friends.html', username=username, groups=data)
 
 
 @app.route('/addFriendGroup', methods=['GET','POST'])
@@ -127,6 +137,7 @@ def addFriendGroup():
 	queryFG = "INSERT INTO FriendGroup (group_name, username) VALUES(%s, %s)"
 	cursor.execute(queryFG, (friendGroupName, username))
 	#add yourself as member
+
 	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
 	cursor.execute(queryMeAsMem, (username, friendGroupName, username))
 	#add other person as member
@@ -134,7 +145,7 @@ def addFriendGroup():
 	cursor.execute(queryAddMember, (memUsername, friendGroupName, username))
 	conn.commit()
 	cursor.close()
-	return redirect(url_for('home'))
+	return redirect(url_for('friends'))
 
 
 @app.route('/logout')
