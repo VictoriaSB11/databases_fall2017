@@ -90,7 +90,7 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s ORDER BY timest DESC'
+	query = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
@@ -105,6 +105,33 @@ def post():
 	public=request.form['optradio']
 	query = 'INSERT INTO Content(username,file_path,content_name,public) VALUES(%s, %s, %s,%s)'
 	cursor.execute(query, (username, file_path, content_name, public))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('home'))
+
+
+@app.route('/addFriendGroup', methods=['GET','POST'])
+def addFriendGroup():
+	username = session['username']
+	cursor = conn.cursor();
+	friendGroupName = request.form['groupName']
+	mFirstName = request.form['memfname']
+	mLastName = request.form['memlname']
+	
+	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
+	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
+	memUsername = cursor.fetchone().get('username')
+	 
+	#create freind group only after we have ensured that 
+	#person we want to create the group with exists 
+	queryFG = "INSERT INTO FriendGroup (group_name, username) VALUES(%s, %s)"
+	cursor.execute(queryFG, (friendGroupName, username))
+	#add yourself as member
+	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryMeAsMem, (username, friendGroupName, username))
+	#add other person as member
+	queryAddMember = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryAddMember, (memUsername, friendGroupName, username))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('home'))

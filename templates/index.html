@@ -43,13 +43,11 @@
         <p></p>
         <a class="btn btn-primary btn-sm" href="{{ url_for('home') }}">Make a post</a>
         <a class="btn btn-primary btn-sm" href="/unfollow">Unfollow someone</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('home') }}">Create a friend group</a>
         <a class="btn btn-primary btn-sm" href="/view_followed">View people you have followed</a> </br>
         </br>
     </div>
-    <h4>Your Feed </h4> </br>
-    {% for line in tweets%}
-    <p>{{line}}</p>
-    <hr> {% endfor %} {% endif %}
+    {% endif %}
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
