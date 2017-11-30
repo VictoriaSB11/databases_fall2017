@@ -24,19 +24,11 @@
             <br>
             <br>
             <input type="text" class="form-control" name="content_name" placeholder="What is this?" required/> </br>
-<<<<<<< HEAD
-            <label class="radio-inline">
-                <input type="radio" name="options" id="public" value=1 >Public
-            </label>
-            <label class="radio-inline">
-                <input type="radio" name="options" id="private" value=0 >Private
-=======
             <label style="color: black" class="radio-inline">
                 <input type="radio" name="optradio" value="1">Public
             </label>
             <label style="color: black" class="radio-inline">
                 <input type="radio" name="optradio" value="0">Private
->>>>>>> origin/mods
             </label>
             <br>
             <br>
@@ -60,16 +52,21 @@
             <th style="text-align: center">Content</th>
             <th style="text-align: center">Caption</th>
             <th style="text-align: center">Comment</th>
+            <th style="text-align: center">Name</th>
+            <th style="text-align: center">Tagged</th>
             {% for line in posts %}
             <tr>
                 <td>{{line.timest}}</td>
                 <td>{{line.file_path}}</td>
                 <td>{{line.content_name}}</td>
                 <td>{{line.comment}}</td>
+                <td>{{line.username_tagger}}</td>
+                <td>{{line.username_taggee}}</td>
             </tr>
             {% endfor %}
         </table>
     </div>
+    <br>
     <br>
     <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
