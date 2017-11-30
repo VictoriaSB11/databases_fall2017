@@ -94,7 +94,7 @@ def home():
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
-	return render_template('home.html', username=username, posts=data)
+	return render_template('home.html', username=username, posts=data, ispost=True)
 
 @app.route('/post', methods=['GET', 'POST'])
 def post():
