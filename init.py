@@ -37,7 +37,7 @@ def register():
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
 	username = request.form['username']
-	password = request.form['password']
+	password = sha1(request.form['password']).hexdigest()
 
 	cursor = conn.cursor()
 
@@ -63,7 +63,7 @@ def loginAuth():
 def registerAuth():
 	#grabs information from the forms
 	username = request.form['new_username']
-	password = request.form['new_password']
+	password = sha1(request.form['new_password']).hexdigest()
 	fname = request.form['fname']
 	lname = request.form['lname']
 
@@ -93,10 +93,13 @@ def registerAuth():
 def home():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT id, username, content_name, file_path, timest\
+	query1 = 'SELECT id, username, content_name, file_path, timest\
 	FROM content WHERE username = %s || public = %s || id in \
 	(SELECT id FROM Share, Member WHERE Share.group_name = Member.group_name  && Member.username = %s) ORDER BY timest DESC'
-	cursor.execute(query, (username, True, username))
+	cursor.execute(query1, (username, True, username))
+
+	query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
+	cursor.execute(query2, (username))
 	data = cursor.fetchall()
 	cursor.close()
 	return render_template('home.html', username=username, posts=data)
@@ -113,6 +116,44 @@ def post():
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('index'))
+
+@app.route('/friends')
+def friends():
+	username = session['username']
+	cursor = conn.cursor();
+	query = 'SELECT group_name FROM member WHERE username = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchall()
+	cursor.close()
+	return render_template('friends.html', username=username, groups=data)
+
+
+@app.route('/addFriendGroup', methods=['GET','POST'])
+def addFriendGroup():
+	username = session['username']
+	cursor = conn.cursor();
+	friendGroupName = request.form['groupName']
+	mFirstName = request.form['memfname']
+	mLastName = request.form['memlname']
+	
+	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
+	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
+	memUsername = cursor.fetchone().get('username')
+	 
+	#create freind group only after we have ensured that 
+	#person we want to create the group with exists 
+	queryFG = "INSERT INTO FriendGroup (group_name, username) VALUES(%s, %s)"
+	cursor.execute(queryFG, (friendGroupName, username))
+	#add yourself as member
+
+	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryMeAsMem, (username, friendGroupName, username))
+	#add other person as member
+	queryAddMember = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryAddMember, (memUsername, friendGroupName, username))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('friends'))
 
 
 @app.route('/logout')

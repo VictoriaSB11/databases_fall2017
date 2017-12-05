@@ -51,6 +51,11 @@
         </br>
     </div>
     <hr> {% endif %}
+        <a class="btn btn-primary btn-sm" href="{{ url_for('friends') }}">Create a friend group</a>
+        <a class="btn btn-primary btn-sm" href="/view_followed">View people you have followed</a> </br>
+        </br>
+    </div>
+    {% endif %}
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
     <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
