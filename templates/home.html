@@ -54,6 +54,7 @@
             <th style="text-align: center">Comment</th>
             <th style="text-align: center">Name</th>
             <th style="text-align: center">Tagged</th>
+            <th style="text-align: center">Tag Yourself!</th>
             {% for line in posts %}
             <tr>
                 <td>{{line.timest}}</td>
@@ -62,6 +63,7 @@
                 <td>{{line.comment}}</td>
                 <td>{{line.username_taggee}}</td>
                 <td>{{line.username_tagger}}</td>
+                <td><a class="btn btn-primary btn-sm" href="">Select</a></td>
             </tr>
             {% endfor %}
         </table>

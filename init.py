@@ -155,6 +155,9 @@ def addFriendGroup():
 	cursor.close()
 	return redirect(url_for('friends'))
 
+@app.route('/profile')
+def backProfile():
+	return render_template('index.html', message=not None)
 
 @app.route('/logout')
 def logout():
