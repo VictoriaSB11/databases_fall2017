@@ -10,10 +10,10 @@ app = Flask(__name__)
 #Configure MySQL
 
 conn = pymysql.connect(host='localhost',
-					   port=8889,
+					   port=3306,
                        user='root',
-                       passwd='password',
-                       db='prichosha',
+                       passwd='',
+                       db='pricosha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
 	
@@ -115,7 +115,7 @@ def post():
 	cursor.execute(query, (username, file_path, content_name, public))
 	conn.commit()
 	cursor.close()
-	return redirect(url_for('index'))
+	return redirect(url_for('home'))
 
 @app.route('/friends')
 def friends():
@@ -126,6 +126,21 @@ def friends():
 	data = cursor.fetchall()
 	cursor.close()
 	return render_template('friends.html', username=username, groups=data)
+
+
+@app.route('/tagandshare')
+def tagandshare():
+	username=session['username']
+	cursor = conn.cursor();
+	query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s ORDER BY timest DESC'
+	cursor.execute(query2, (username))
+	data1 = cursor.fetchall()
+	query = 'SELECT group_name FROM member WHERE username = %s'
+	cursor.execute(query, (username))
+	data2 = cursor.fetchall()
+	cursor.close()
+	return render_template('tagandshare.html', username=username, posts=data1, groups=data2)
+
 
 
 @app.route('/addFriendGroup', methods=['GET','POST'])
