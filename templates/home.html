@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 </head>
@@ -24,7 +25,7 @@
             <br>
             <br>
             <input type="text" class="form-control" name="content_name" placeholder="What is this?" required/> </br>
-           <label style="color: black" class="radio-inline">
+            <label style="color: black" class="radio-inline">
                 <input type="radio" name="optradio" value="1">Public
             </label>
             <label style="color: black" class="radio-inline">
@@ -47,14 +48,16 @@
         </style>
         <br>
         <br>
-        <table style="border-radius: 20px" class="table table-primary  table-hover ">
+        <table style="border-radius: 20px" class="table table-primary table-resp table-hover ">
             <th style="text-align: center">Time</th>
             <th style="text-align: center">Content</th>
-            <th style="text-align: center">Caption</th>
             <th style="text-align: center">Comment</th>
             <th style="text-align: center">Name</th>
             <th style="text-align: center">Tagged</th>
             <th style="text-align: center">Tag Yourself!</th>
+            <th style="text-align: center">Likes</th>
+            <th style="text-align: center"></th>
+            <th style="text-align: center"></th>
             {% for line in posts %}
             <tr>
                 <td>{{line.timest}}</td>
@@ -63,7 +66,13 @@
                 <td>{{line.comment}}</td>
                 <td>{{line.username_taggee}}</td>
                 <td>{{line.username_tagger}}</td>
-                <td><a class="btn btn-primary btn-sm" href="">Select</a></td>
+                <td>{{line.likes}}</td>
+                <td> <a class="btn btn-primary btn-sm" href="/likes">Like</a></td>
+                <td>
+                    <td><a class="btn btn-primary btn-sm" href="/tag">Tag</a></td>
+                    <td>
+                        <a class="btn btn-success btn-sm" href="/share">Share</a>
+                    </td>
             </tr>
             {% endfor %}
         </table>
@@ -72,9 +81,9 @@
     <br>
     <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
     <a href="/profile" class="btn btn-danger btn-sm" role="button">Back to Profile</a>
+    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
     <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
     <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
     <script src="{{url_for('static', filename='css/jquery-3.2.1.min.js')}}"></script>
 </body>
 
