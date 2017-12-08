@@ -37,8 +37,7 @@ def register():
 @app.route('/loginAuth', methods = ['GET', 'POST'])
 def loginAuth():
 	username = request.form['username']
-	password = sha1(request.form['password']).hexdigest()
-
+	password = request.form['password']
 	cursor = conn.cursor()
 
 	query = 'SELECT * FROM Person WHERE username = %s AND password = %s'
@@ -63,7 +62,7 @@ def loginAuth():
 def registerAuth():
 	#grabs information from the forms
 	username = request.form['new_username']
-	password = sha1(request.form['new_password']).hexdigest()
+	password = request.form['new_password']
 	fname = request.form['fname']
 	lname = request.form['lname']
 
@@ -88,6 +87,48 @@ def registerAuth():
 		conn.commit()
 		cursor.close()
 		return render_template('index.html', message=message)
+
+@app.route('/password')
+def password():
+	return render_template('password.html')
+
+@app.route('/forgotPassword', methods=['GET','POST'])
+def forgotPassword():
+	#grab infor from the reset password form
+	username = request.form['username']
+	newpass = request.form['password1']
+	confirmpass = request.form['password2']
+
+	cursor = conn.cursor()
+
+	query = 'SELECT * FROM Person WHERE username=%s'
+	cursor.execute(query, (username))
+	data = cursor.fetchone()
+	cursor.close()
+
+	error = None
+	message = not None
+
+	if newpass != confirmpass:
+		error = 'The passwords do not match'
+		return render_template('password.html', error=error)
+	else:
+		newpass_hex = sha1(newpass).hexdigest()
+		confirmpass_hex = sha1(confirmpass).hexdigest()
+
+		cursor = conn.cursor()
+		update = 'UPDATE Person SET password = %s WHERE username = %s'
+		cursor.execute(update, (newpass_hex, username))
+		conn.commit()
+
+		query = 'SELECT * FROM person WHERE username = %s AND password = %s'
+		cursor.execute(query, (username, newpass))
+
+		new_data = cursor.fetchone()
+		print(new_data)
+		message = "Password successfully changed, you are logged back in!"
+		cursor.close()
+		return render_template('index.html')
 
 @app.route('/home')
 def home():
@@ -161,8 +202,8 @@ def backProfile():
 
 @app.route('/logout')
 def logout():
-	session.pop('username')
-	return redirect('/')
+	session['username'] = ''
+	return render_template('index.html')
 
 app.static_folder = 'static'
 app.secret_key = 'secret key 123'
