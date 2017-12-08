@@ -174,7 +174,8 @@ def addFriendGroup():
 def addEvent():
 	username = session['username']
 	cursor = conn.cursor();
-	friendGroupName = request.form['eventName']
+	eventName = request.form['eventName']
+	eventDate = request.form['eventDate']
 	mFirstName = request.form['memfname']
 	mLastName = request.form['memlname']
 	
@@ -185,7 +186,7 @@ def addEvent():
 	#create friend group only after we have ensured that 
 	#person we want to create the group with exists 
 	queryFG = "INSERT INTO Event (group_name, username) VALUES(%s, %s)"
-	cursor.execute(queryFG, (friendGroupName, username))
+	cursor.execute(queryFG, (eventName, eventDate,username))
 	#add yourself as member
 
 	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
