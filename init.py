@@ -98,7 +98,7 @@ def home():
 	(SELECT id FROM Share, Member WHERE Share.group_name = Member.group_name  && Member.username = %s) ORDER BY timest DESC'
 	cursor.execute(query1, (username, True, username))
 
-	query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
+	query2 = 'SELECT timest, content_name, file_path, likes FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
 	cursor.execute(query2, (username))
 	data = cursor.fetchall()
 	cursor.close()
@@ -111,9 +111,23 @@ def post():
 	file_path = request.form['image_path']
 	content_name = request.form['content_name']
 	public=request.form['optradio']
-	query = 'INSERT INTO Content(username, file_path, content_name, public) VALUES(%s, %s, %s, %s)'
-	cursor.execute(query, (username, file_path, content_name, public))
+	likes=0
+	query = 'INSERT INTO Content(username, file_path, content_name, public,likes) VALUES(%s, %s, %s, %s,%s)'
+	cursor.execute(query, (username, file_path, content_name, public,likes))
 	conn.commit()
+	cursor.close()
+	return redirect(url_for('home'))
+
+
+@app.route('/likes')
+def likes(content_name):
+	username = session['username']
+	cursor = conn.cursor();
+	query = 'SELECT likes FROM content WHERE username = %s'
+	cursor.execute(query, (username))
+	data = cursor.fetchall()
+	query2 = 'UPDATE content SET likes = likes+1 WHERE username = %s'
+	cursor.execute(query2, (data,username))
 	cursor.close()
 	return redirect(url_for('home'))
 
@@ -121,7 +135,7 @@ def post():
 def friends():
 	username = session['username']
 	cursor = conn.cursor();
-	query = 'SELECT group_name FROM member WHERE username = %s'
+	query = 'SELECT DISTINCT group_name, username_creator FROM member WHERE username = %s OR username_creator = %s'
 	cursor.execute(query, (username))
 	data = cursor.fetchall()
 	cursor.close()
@@ -139,7 +153,7 @@ def tagandshare():
 	cursor.execute(query, (username))
 	data2 = cursor.fetchall()
 	cursor.close()
-	return render_template('tagandshare.html', username=username, posts=data1, groups=data2)
+	return render_template('tagandshare.html', username=username, posts=data1, groups=data2,sel=1)
 
 
 

@@ -1,6 +1,5 @@
 body {
-    background-image: url(../css/doodles.jpg);
-    /* background-image: url({{ url_for('static', filename='css/doodles.jpg') }}); */
+    background: url(../css/doodles.jpg) no-repeat center center fixed;
 }
 
 
@@ -71,6 +70,8 @@ input[type="password"] {
 
 
 
+
+
 /*--------------BACKGROUND VIDEO FOR HOMEPAGE---------------*/
 
 .video-container {
@@ -98,6 +99,8 @@ input[type="password"] {
     transform: translate(-50%, -50%);
     z-index: -100;
 }
+
+
 
 
 
@@ -155,6 +158,8 @@ input[type="password"] {
 }
 
 
+
+
 /* The typing effect */
 
 @keyframes typing {
@@ -165,6 +170,8 @@ input[type="password"] {
         width: 100%
     }
 }
+
+
 
 
 

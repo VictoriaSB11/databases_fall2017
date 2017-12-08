@@ -56,11 +56,47 @@
     </div>
     <br>
     <br>
+    <div style="width: 400px; height: 500px; margin-left: 200px; float: left">
+        <h3>Fill Out Form to Share </h3>
+        <form action=" /addFriendGroup " method="POST ">
+            <br>
+            <input style="color: black " type="text " class="form-control " name="groupName " placeholder="What 's your group name?" required />
+            <br>
+            <h3 style="color: black"> Add A Member</h3>
+            <br>
+            <input type=" text" class="form-control" name="memfname" placeholder="Member first name" required />
+            <input type="text" class="form-control" name="memlname" placeholder="Member last name" required />
+            <br>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="Share" />
+            <br>
+            <br>
+        </form>
+    </div>
+    <div style="width: 400px; height: 500px; padding-left:100px; float: left">
+        <h3>Fill Out Form to Tag </h3>
+        <form action="/addFriendGroup" method="POST">
+            <br>
+            <input style="color: black" type="text" class="form-control" name="groupName" placeholder="What's your group name? " required />
+            <br>
+            <h3 style="color: black "> Add A Member</h3>
+            <br>
+            <input type=" text " class="form-control " name="memfname " placeholder="Member first name " required />
+            <input type="text " class="form-control " name="memlname " placeholder="Member last name " required />
+            <br>
+            <br>
+            <input type="submit " class="btn btn-primary btn-lg " value="Tag" />
+            <br>
+            <br>
+        </form>
+    </div>
     <br>
-    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
-    <script src="{{url_for('static', filename='css/jquery-3.2.1.min.js')}}"></script>
-    <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
-    <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
+    <br>
+    <br>
+    <script type="text/javascript " src="../static/css/jquery-3.2.1.min.js "></script>
+    <script src="{{url_for( 'static', filename='css/jquery-3.2.1.min.js' )}} "></script>
+    <script src="{{url_for( 'static', filename='css/bootstrap.min.js' )}} "></script>
+    <script type="text/javascript " src="../static/css/bootstrap.min.js "></script>
 </body>
 
 </html>
