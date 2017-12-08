@@ -190,10 +190,10 @@ def addEvent():
 	#add yourself as member
 
 	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
-	cursor.execute(queryMeAsMem, (username, friendGroupName, username))
+	cursor.execute(queryMeAsMem, (username, eventName, username))
 	#add other person as member
 	queryAddMember = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
-	cursor.execute(queryAddMember, (memUsername, friendGroupName, username))
+	cursor.execute(queryAddMember, (memUsername, eventName, username))
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('friends'))
