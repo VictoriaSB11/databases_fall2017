@@ -170,6 +170,33 @@ def addFriendGroup():
 	cursor.close()
 	return redirect(url_for('friends'))
 
+@app.route('/addEvent', methods=['GET','POST'])
+def addEvent():
+	username = session['username']
+	cursor = conn.cursor();
+	friendGroupName = request.form['eventName']
+	mFirstName = request.form['memfname']
+	mLastName = request.form['memlname']
+	
+	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
+	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
+	memUsername = cursor.fetchone().get('username')
+	 
+	#create friend group only after we have ensured that 
+	#person we want to create the group with exists 
+	queryFG = "INSERT INTO Event (group_name, username) VALUES(%s, %s)"
+	cursor.execute(queryFG, (friendGroupName, username))
+	#add yourself as member
+
+	queryMeAsMem = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryMeAsMem, (username, friendGroupName, username))
+	#add other person as member
+	queryAddMember = "INSERT INTO Member (username, group_name, username_creator) VALUES(%s, %s, %s)"
+	cursor.execute(queryAddMember, (memUsername, friendGroupName, username))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('friends'))
+
 @app.route('/profile')
 def backProfile():
 	return render_template('index.html', message=not None)
