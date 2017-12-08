@@ -10,9 +10,9 @@ app = Flask(__name__)
 #Configure MySQL
 
 conn = pymysql.connect(host='localhost',
-					   port=3306,
+					   port=8889,
                        user='root',
-                       passwd='',
+                       passwd='root',
                        db='pricosha',
                        charset='utf8mb4',
                        cursorclass=pymysql.cursors.DictCursor)
@@ -183,6 +183,51 @@ def addFriendGroup():
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('friends'))
+
+@app.route('/addEvent', methods=['GET','POST'])
+def addEvent():
+	username = session['username']
+	cursor = conn.cursor();
+	event_name = request.form['eventName']
+	event_date = request.form['eventDate']
+	mFirstName = request.form['memfname']
+	mLastName = request.form['memlname']
+	
+	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
+	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
+	memUsername = cursor.fetchone().get('username')
+	 
+	#create friend group only after we have ensured that 
+	#person we want to create the group with exists 
+	queryFG = "INSERT INTO Event (username, event_name, event_date) VALUES(%s, %s)"
+	cursor.execute(queryFG, (username, event_name, event_date))
+	#add yourself as member
+
+
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('events'))
+
+@app.route('/searchEvent', methods=['GET','POST'])
+def searchEvent():
+	username = session['username']
+	cursor = conn.cursor();
+	event_date = request.form['eventDate']
+	mFirstName = request.form['memfname']
+	mLastName = request.form['memlname']
+	
+	query = "SELECT event_name FROM Event WHERE event_date = %s"
+	cursor.execute(query, (event_date))
+	x = cursor.fetchone().get('username')
+	 
+	#create friend group only after we have ensured that 
+	#person we want to create the group with exists 
+	#add yourself as member
+
+
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('events'))
 
 @app.route('/profile')
 def backProfile():

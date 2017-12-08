@@ -17,6 +17,16 @@ CREATE TABLE Content(
 	FOREIGN KEY (username) REFERENCES Person (username)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE Event(
+	id INT AUTO_INCREMENT,
+	username VARCHAR (50),
+	timest TIMESTAMP,
+	event_name VARCHAR (100),
+	event_date VARCHAR (50),
+	PRIMARY KEY (id),
+	FOREIGN KEY (username) REFERENCES Person (username)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 CREATE TABLE Tag(
 	id INT,
 	username_tagger VARCHAR (50),
