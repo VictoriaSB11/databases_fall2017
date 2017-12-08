@@ -155,7 +155,7 @@ def addFriendGroup():
 	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
 	memUsername = cursor.fetchone().get('username')
 	 
-	#create freind group only after we have ensured that 
+	#create friend group only after we have ensured that 
 	#person we want to create the group with exists 
 	queryFG = "INSERT INTO FriendGroup (group_name, username) VALUES(%s, %s)"
 	cursor.execute(queryFG, (friendGroupName, username))
