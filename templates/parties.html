@@ -15,21 +15,17 @@
 
 <body>
     <div class="centerh1">
-        <h1 style="color: black"> Welcome {{username}} !</h1>
+        <h1 style="color: black">{{username}}'s parties !</h1>
         <hr class="colorgraph">
         <br>
-        <form action="/addFriendGroup" method="POST">
+        <form action="/createParty" method="POST">
             <br>
-            <input style="color: black" type="text" class="form-control" name="groupName" placeholder="What's your group name?" required />
+            <input style="color: black" type="text" class="form-control" name="partyName" placeholder="Party Name" required/>
+            <input style="color: black" type="text" class="form-control" name="partyLocation" placeholder="Location" required/>
+            <input style="color: black" type="text" class="form-control" name="partyDatetime" placeholder="MM/DD/YYYY, Time" required/>
+            <input style="color: black" type="text" class="form-control" name="partyDescription" placeholder="Description" required/>
             <br>
-            <h3 style="color: black"> Add First Member</h3>
-            <br>
-            <input type=" text" class="form-control" name="memfname" placeholder="Member first name" required />
-            <input type="text" class="form-control" name="memlname" placeholder="Member last name" required />
-            <br>
-            <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="Create Group" />
-            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="Create Party" />
             <br>
         </form>
         <style type="text/css">
@@ -42,15 +38,6 @@
         }
         </style>
         <br>
-        <br>
-        <table style="border-radius: 20px " class="table table-primary table-hover">
-            <th style="text-align: center ">Your Groups</th>
-            {% for line in groups %}
-            <tr>
-                <td>{{line.group_name}}</td>
-            </tr>
-            {% endfor %}
-        </table>
     </div>
     <br>
     <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>

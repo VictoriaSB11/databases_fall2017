@@ -55,7 +55,6 @@
             <th style="text-align: center">Name</th>
             <th style="text-align: center">Tagged</th>
             <th style="text-align: center">Tag Yourself!</th>
-            <th style="text-align: center">Likes</th>
             <th style="text-align: center"></th>
             <th style="text-align: center"></th>
             {% for line in posts %}
@@ -66,7 +65,6 @@
                 <td>{{line.comment}}</td>
                 <td>{{line.username_taggee}}</td>
                 <td>{{line.username_tagger}}</td>
-                <td>{{line.likes}}</td>
                 <td> <a class="btn btn-primary btn-sm" href="/likes">Like</a></td>
                 <td>
                     <td><a class="btn btn-primary btn-sm" href="/tag">Tag</a></td>

@@ -25,9 +25,10 @@
                 <h3 style="color: black" class="form-signin-heading">PriCoSha | Login</h3>
                 <hr class="colorgraph">
                 <br>
-                <input type="text" class="form-control" name="username" placeholder="username" required autofocus />
-                <input type="password" class="form-control" name="password" placeholder="password" required />
+                <input type="text" class="form-control" name="username" placeholder="username" />
+                <input type="password" class="form-control" name="password" placeholder="password" />
                 <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit">Login</button>
+                <a href="/password" class="btn btn-lg btn-primary btn-block" role="button">Forgot Password</a>
                 {% if error %}
                 <p class="error"><strong>Error:</strong> {{error}}</p> {% endif %}
             </form>

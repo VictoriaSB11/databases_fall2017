@@ -27,7 +27,6 @@
         <hr class="colorgraph">
         <a href="/login" class="btn btn-primary btn-round-lg btn-lg" role="button">Login</a>
         <a href="/register" class="btn btn-primary btn-round-lg btn-lg" role="button">Register</a>
-        <a href="/password" class="btn btn-primary btn-round-lg btn-lg" role="button">Forgot Password</a>
     </div>
     {% endif %} {% if message %}
     <br>
@@ -41,9 +40,25 @@
         <p style="color: black" class="message">You are logged in.</p>
         <p></p>
         <a class="btn btn-primary btn-sm" href="{{ url_for('home') }}">Make a post and view your feed</a>
+        <br>
+        <br>
+        <p style="color: black">Managing Friends!</p>
         <a class="btn btn-primary btn-sm" href="{{ url_for('friends') }}">Create a friend group</a>
+        <br>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('addFriend') }}">Add friend to a group</a>
+        <br>
+        <br>
+        <p style="color: black">Managing Parties!</p>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('parties') }}">Host a party</a>
+        <br>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('invite') }}">Invite people to a party</a>
+        <br>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('viewInvites') }}">Manage Party Invites</a>
+        <br>
+        <br>
+        <p style="color: black" class="message">Managing Tags!</p>
         <a class="btn btn-primary btn-sm" href="{{ url_for('tagandshare') }}">Tag And Share</a>
-        <a class="btn btn-primary btn-sm" href="/unfollow">Remove a friend group or Remove a friend</a>
+        <br>
         </br>
     </div>
     {% endif %}

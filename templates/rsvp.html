@@ -1,0 +1,129 @@
+<html>
+
+<head>
+    <title>PriCoSha</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+</head>
+
+<body>
+    <div style="display:block;">
+        <h1 style="color: black">Parties You're Going to!</h1>
+        <table style="border-radius: 20px " class="table table-primary table-responsive table-hover">
+            <th style="text-align: center;font-weight: bold">Host</th>
+            <th style="text-align: center;font-weight: bold">Name</th>
+            <th style="text-align: center;font-weight: bold">Description</th>
+            <th style="text-align: center;font-weight: bold">Location</th>
+            <th style="text-align: center;font-weight: bold">Date/Time</th>
+            <th style="text-align: center;font-weight: bold">Status</th>
+            {% for party in going %}
+            <tr>
+                <td>{{party.username_host}}</td>
+                <td>{{party.party_name}}</td>
+                <td>{{party.description}}</td>
+                <td>{{party.location}}</td>
+                <td>{{party.datetime}}</td>
+                <td>{{party.going}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="display:block;">
+        <h1 style="color: black"> Select a party to unRSVP to!</h1>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p> 
+        {% endif %}
+
+        <form action="/unrsvp" method="POST">
+            <select class="form-control" name="select_party">
+                {% for party in going %}
+                <option value="{{ party.party_name }}">{{ party.party_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="unRSVP!" />
+            <br>
+        </form>
+
+        <style type="text/css">
+        table,
+        th,
+        td {
+
+            border: double;
+            border-color: black;
+        }
+        </style>
+        <br>
+        <br>
+    </div>
+    <div style="display:block;">
+        <h1 style="color: black"> Parties You Were Invited to!</h1>
+        <table style="border-radius: 20px" class="table table-primary table-responsive table-hover ">
+            <th style="text-align: center;font-weight: bold">Host</th>
+            <th style="text-align: center;font-weight: bold">Name</th>
+            <th style="text-align: center;font-weight: bold">Description</th>
+            <th style="text-align: center;font-weight: bold">Location</th>
+            <th style="text-align: center;font-weight: bold">Date/Time</th>
+            <th style="text-align: center;font-weight: bold">Status</th>
+            {% for party in notGoing %}
+            <tr>
+                <td>{{party.username_host}}</td>
+                <td>{{party.party_name}}</td>
+                <td>{{party.description}}</td>
+                <td>{{party.location}}</td>
+                <td>{{party.datetime}}</td>
+                <td>{{party.going}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="display:block;">
+        <h1 style="color: black"> Select a party to RSVP to!</h1>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p> 
+        {% endif %}
+
+        <form action="/rsvp" method="POST">
+            <select class="form-control" name="select_party">
+                {% for party in notGoing %}
+                <option value="{{ party.party_name }}">{{ party.party_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="RSVP!" />
+            <br>
+        </form>
+
+        <style type="text/css">
+        table,
+        th,
+        td {
+
+            border: double;
+            border-color: black;
+        }
+        </style>
+        <br>
+        <br>
+    </div>
+    <br>
+    <br>
+    <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
+    <a href="/profile" class="btn btn-danger btn-sm" role="button">Back to Profile</a>
+    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
+    <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='css/jquery-3.2.1.min.js')}}"></script>
+</body>
+
+</html>
