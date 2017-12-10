@@ -130,33 +130,49 @@ def forgotPassword():
 		cursor.close()
 		return render_template('index.html')
 
-@app.route('/home')
-def home():
-	username = session['username']
-	cursor = conn.cursor();
-	query1 = 'SELECT id, username, content_name, file_path, timest\
-	FROM content WHERE username = %s || public = %s || id in \
-	(SELECT id FROM Share, Member WHERE Share.group_name = Member.group_name  && Member.username = %s) ORDER BY timest DESC'
-	cursor.execute(query1, (username, True, username))
-
-	query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
-	cursor.execute(query2, (username))
-	data = cursor.fetchall()
-	cursor.close()
-	return render_template('home.html', username=username, posts=data)
-
-@app.route('/post', methods=['GET', 'POST'])
+@app.route('/post')
 def post():
 	username = session['username']
 	cursor = conn.cursor();
+	queryGetGroups = "SELECT group_name FROM FriendGroup WHERE username = %s"
+#	query1 = 'SELECT id, username, content_name, file_path, timest\
+#	FROM content WHERE username = %s || public = %s || id in \
+	#(SELECT id FROM Share, Member WHERE Share.group_name = Member.group_name  && Member.username = %s) ORDER BY timest DESC'
+	cursor.execute(queryGetGroups, (username))
+	dataGroups = cursor.fetchall()
+	cursor.close()
+	#query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s && public = 1 ORDER BY timest DESC'
+	#cursor.execute(query2, (username))
+	#data = cursor.fetchall()
+	cursor.close()
+	return render_template('post.html', username=username, groups=dataGroups)
+
+@app.route('/makePost', methods=['GET', 'POST'])
+def makePost():
+	username = session['username']
 	file_path = request.form['image_path']
 	content_name = request.form['content_name']
-	public=request.form['optradio']
-	query = 'INSERT INTO Content(username, file_path, content_name, public) VALUES(%s, %s, %s, %s,%s)'
-	cursor.execute(query, (username, file_path, content_name, public))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('home'))
+	selectedGroup = request.form.get('select_group')
+	cursor = conn.cursor();
+
+	queryPost = 'INSERT INTO Content(username, file_path, content_name, public) VALUES(%s, %s, %s, %s)'
+
+	if(selectedGroup == "public"):
+		public = True
+		cursor.execute(queryPost, (username, file_path, content_name, public))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('post'))
+
+	else:
+		public = False
+		cursor.execute(queryPost, (username, file_path, content_name, public))
+		postID = cursor.lastrowid
+		queryShare = 'INSERT INTO Share(id, group_name, username) VALUES(%s, %s, %s)'
+		cursor.execute(queryShare, (postID, selectedGroup, username))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('post'))
 
 @app.route('/friends')
 def friends():
@@ -187,6 +203,11 @@ def addFriendtoGroup():
 	memUsername = request.form['memUsername']
 	cursor = conn.cursor();
 
+	#select all friend groups that the user owns
+	queryAllGroups = 'SELECT DISTINCT group_name FROM FriendGroup WHERE username = %s'
+	cursor.execute(queryAllGroups, (username))
+	dataGroups = cursor.fetchall()
+
 	#check that there is one person with this name
 	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
 	cursor.execute(queryFindMemUsername, (memFirst, memLast))
@@ -194,14 +215,14 @@ def addFriendtoGroup():
 
 	if( friendUsername > 1):
 		error = "More than one person with that name: %s. Please provide the username as well" % (friendUsername)
-		return redirect(url_for('addFriend', error=error))
+		return render_template('addFriend.html', error=error, groups=dataGroups)
 
 	queryAlreadyInGroup = "SELECT * FROM member WHERE username = %s AND group_name = %s"
 	cursor.execute(queryAlreadyInGroup, (friendUsername, selectedGroup))
 	data = cursor.fetchall()
 
 	if(data):
-		error = "This person is already in the group"
+		error = "This person is already in the group, unless they have a different username: %s" % (friendUsername)
 		return redirect(url_for('addFriend', error=error))
 
 	if(memUsername):

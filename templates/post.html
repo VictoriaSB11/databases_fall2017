@@ -19,21 +19,21 @@
         <h1 style="color: black"> Welcome {{username}} !</h1>
         <hr class="colorgraph">
         <br>
-        <form style="border: double; border-color: black; border-radius: 20px " action="/post" method="POST">
+        <form style="border: double; border-color: black; border-radius: 20px" action="/makePost" method="POST">
             <br>
             <input style="color: black" type="text" name="image_path" placeholder="Add a link.." required />
             <br>
+            <input type="text" class="form-control" name="content_name" placeholder="Name of this link" required/> </br>
             <br>
-            <input type="text" class="form-control" name="content_name" placeholder="What is this?" required/> </br>
-            <label style="color: black" class="radio-inline">
-                <input type="radio" name="optradio" value="1">Public
-            </label>
-            <label style="color: black" class="radio-inline">
-                <input type="radio" name="optradio" value="0">Private
-            </label>
-            <br>
-            <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="post" />
+            <p style="color:black">Select a Group to Share Privately</p>
+            <select class="form-control" name="select_group">
+                <option value="public">None - Share Public</option>
+                {% for group in groups %}
+                <option value="{{ group.group_name }}">{{ group.group_name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" class="btn btn-primary btn-lg" value="Post" />
+        </form>
             <br>
             <br>
         </form>
