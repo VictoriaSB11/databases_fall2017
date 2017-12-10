@@ -174,6 +174,37 @@ def makePost():
 		cursor.close()
 		return redirect(url_for('post'))
 
+@app.route('/feed')
+def feed():
+	username = session['username']
+	cursor = conn.cursor()
+	#et posts that the user can see
+	queryPostInfo = 'SELECT id, username, timest, content_name, public, file_path FROM Content WHERE id IN \
+			(SELECT id FROM Member NATURAL JOIN Share WHERE Member.username = %s) OR public = 1 OR username = %s OR \
+			id IN (SELECT id FROM Tag WHERE username_taggee = %s AND status = 1) \
+			OR %s in (SELECT username FROM Member WHERE group_name IN \
+			(SELECT group_name FROM Member WHERE username=%s)) ORDER BY timest DESC'
+
+	cursor.execute(queryPostInfo, (username, username, username, username, username))
+	postInfoData = cursor.fetchall()
+	
+	#get comment information for all posts
+	queryComments = 'SELECT id, username, comment_text, timest FROM Comment'
+	cursor.execute(queryComments)
+	commentData = cursor.fetchall()
+
+	#get tag information for all posts
+	queryTag = 'SELECT id, username_taggee, first_name, last_name FROM Tag JOIN Person ON Tag.username_taggee = Person.username WHERE status = 1'
+	cursor.execute(queryTag)
+	tagData = cursor.fetchall()
+
+	cursor.close()
+	conn.commit()
+	cursor.close()
+
+	return render_template('feed.html', posts=postInfoData, comments=commentData, tags=tagData)
+
+
 @app.route('/friends')
 def friends():
 	username = session['username']
@@ -238,22 +269,6 @@ def addFriendtoGroup():
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('addFriend'))
-
-
-@app.route('/tagandshare')
-def tagandshare():
-	username=session['username']
-	cursor = conn.cursor();
-	query2 = 'SELECT timest, content_name, file_path FROM Content WHERE username = %s ORDER BY timest DESC'
-	cursor.execute(query2, (username))
-	data1 = cursor.fetchall()
-	query = 'SELECT group_name FROM member WHERE username = %s'
-	cursor.execute(query, (username))
-	data2 = cursor.fetchall()
-	cursor.close()
-	return render_template('tagandshare.html', username=username, posts=data1, groups=data2,sel=1)
-
-
 
 @app.route('/addFriendGroup', methods=['GET','POST'])
 def addFriendGroup():
@@ -397,6 +412,102 @@ def unrsvp():
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('rsvp'))
+
+@app.route('/tag')
+def tag():
+	username = session['username']
+	cursor = conn.cursor();
+
+	queryMyContent = "SELECT content_name FROM Content WHERE username = %s"
+	cursor.execute(queryMyContent, (username))
+	data = cursor.fetchall()
+
+	conn.commit()
+	cursor.close()
+	return render_template('tag.html', contentItems=data)
+
+@app.route('/tagPeople', methods=['GET','POST'])
+def tagPeople():
+	username = session['username']
+	selectedContent = request.form.get('select_content')
+	taggeeUsername = request.form['memUsername']
+	cursor = conn.cursor();
+
+	queryAlreadyTagged = "SELECT * FROM Tag JOIN Content ON Tag.id = Content.id WHERE content_name = %s AND  Tag.username_taggee = %s"
+	cursor.execute(queryAlreadyTagged, (selectedContent, taggeeUsername))
+	data = cursor.fetchall()
+
+	queryContentID = "SELECT id FROM Content WHERE content_name = %s AND username = %s"
+	cursor.execute(queryContentID, (selectedContent, username))
+	contentID = cursor.fetchall()
+
+	if(data):
+		error = "This person was already invited"
+		return redirect(url_for('tag', error=error))
+
+	elif(username == taggeeUsername):
+		querySendTag = "INSERT INTO Tag(id, username_tagger, username_taggee, status) VALUES(%s, %s, %s, %s)"
+		cursor.execute(querySendTag, (contentID, username, taggeeUsername, True))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('tag'))
+
+	else:
+		querySendTag = "INSERT INTO Tag(id, username_tagger, username_taggee, status) VALUES(%s, %s, %s, %s)"
+		cursor.execute(querySendTag, (contentID, username, taggeeUsername, False))
+		conn.commit()
+		cursor.close()
+		return redirect(url_for('tag'))
+
+@app.route('/viewTags')
+def viewTags():
+	username = session['username']
+	cursor = conn.cursor();
+
+	queryDeclined = "SELECT username_tagger, content_name, file_path, public FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
+	cursor.execute(queryDeclined, (username, False))
+	declinedData = cursor.fetchall()
+
+	queryAccepted = "SELECT username_tagger, content_name, file_path, public FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
+	cursor.execute(queryAccepted, (username, True))
+	acceptedData = cursor.fetchall()
+
+	conn.commit()
+	cursor.close()
+	return render_template('acceptTag.html', tagAcceptedData=acceptedData, tagDeclinedData=declinedData)
+
+@app.route('/tagAccept', methods=['GET','POST'])
+def tagAccept():
+	username = session['username']
+	selectedContent = request.form.get('select_content')
+	cursor = conn.cursor();
+
+	queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
+	cursor.execute(queryContentID, (username, selectedContent))
+	contentID = cursor.fetchall()
+
+	#ensure person exists and get their username
+	queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
+	cursor.execute(queryUpdateTag, (True, username, contentID))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('acceptTag'))
+
+@app.route('/tagDecline', methods=['GET','POST'])
+def tagDecline():
+	username = session['username']
+	selectedContent = request.form.get('select_content')
+	cursor = conn.cursor();
+
+	queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
+	cursor.execute(queryContentID, (username, selectedContent))
+	contentID = cursor.fetchall()
+
+	deleteTag = "DELETE FROM Tag WHERE username_taggee = %s AND content_id = %s"
+	cursor.execute(deleteTag, (username, contentID))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('acceptTag'))
 
 @app.route('/profile')
 def backProfile():

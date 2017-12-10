@@ -16,27 +16,39 @@
 
 <body>
     <div class="centerh1">
-        <h1>Your Feed!</h1>
-        <table style="border-radius: 20px">
-            <th style="text-align: center">Post ID</th>
-            <th style="text-align: center">Username</th>
-            <th style="text-align: center">Time</th>
-            <th style="text-align: center">Content Name</th>
-            <th style="text-align: center">File Path</th>
-            <th style="text-align: center">Tagged</th>
-            <th style="text-align: center">Comments</th>
-            {% for line in posts %}
-            <tr>
-                <td>{{line.id}}</td>
-                <td>{{line.username}}</td>
-                <td>{{line.timest}}</td>
-                <td>{{line.content_name}}</td>
-                <td>{{line.file_path}}</td>
-                <td>{% for tag in tags %} {% if line.id == tag.id %} {{tag.first_name + " " + tag.last_name}} {% endif %} {%endfor%}</td>
-                <td>{% for comment in comments %} {% if line.id == comment.id%} {{comment.username}}: {{comment.comment_text}} {{comment.timest}} {% endif %} {%endfor%}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <h1 style="color: black"> Select one of your content items</h1>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p> 
+        {% endif %}
+
+        <form action="/tagPeople" method="POST">
+            <select class="form-control" name="select_content">
+                {% for content in contentItems %}
+                <option value="{{ content.content_name }}">{{ content.content_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <h3 style="color: black"> Tag a User </h3>
+            <br>
+            <input type=" text" class="form-control" name="memUsername" placeholder="Member Username" required />
+            <br>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="Invite!" />
+            <br>
+            <br>
+        </form>
+
+        <style type="text/css">
+        table,
+        th,
+        td {
+
+            border: double;
+            border-color: black;
+        }
+        </style>
+        <br>
+        <br>
     </div>
     <br>
     <br>

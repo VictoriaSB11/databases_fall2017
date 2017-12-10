@@ -13,17 +13,28 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 </head>
+<style type="text/css">
+table,
+th,
+td {
+
+    border: double;
+    border-color: black;
+}
+</style>
 
 <body>
-    <div style="display:block;">
-        <h1 style="color: black">Parties You're Going to!</h1>
-        <table style="border-radius: 20px " class="table table-primary table-responsive table-hover">
-            <th style="text-align: center;font-weight: bold">Host</th>
-            <th style="text-align: center;font-weight: bold">Name</th>
-            <th style="text-align: center;font-weight: bold">Description</th>
-            <th style="text-align: center;font-weight: bold">Location</th>
-            <th style="text-align: center;font-weight: bold">Date/Time</th>
-            <th style="text-align: center;font-weight: bold">Status</th>
+    <br>
+    <br>
+    <h3 style=" color: black; text-align: center ">Parties You're Going to!</h3>
+    <div style="width: 200px;margin-left:200px">
+        <table style="border-radius: 20px " class="table table-primary table-hover ">
+            <th style="text-align: center ">Host</th>
+            <th style="text-align: center ">Name</th>
+            <th style="text-align: center ">Description</th>
+            <th style="text-align: center ">Location</th>
+            <th style="text-align: center ">Date/Time</th>
+            <th style="text-align: center ">Status</th>
             {% for party in going %}
             <tr>
                 <td>{{party.username_host}}</td>
@@ -36,44 +47,34 @@
             {% endfor %}
         </table>
     </div>
-    <div style="display:block;">
-        <h1 style="color: black"> Select a party to unRSVP to!</h1>
+    <br>
+    <br>
+    <h3 style=" color: black; text-align: center "> Select a party to unRSVP to!</h3>
+    <div style="text-align: center ">
         {% if error %}
-        <p class="error"><strong>Error:</strong> {{error}}</p> 
-        {% endif %}
-
-        <form action="/unrsvp" method="POST">
-            <select class="form-control" name="select_party">
+        <p style="text-align: center"><strong>Error:</strong> {{error}}</p> {% endif %}
+        <form style="width: 300; margin:0 auto" action="/unrsvp " method="POST ">
+            <select class="form-control " name="select_party ">
                 {% for party in going %}
-                <option value="{{ party.party_name }}">{{ party.party_name }}</option>
+                <option value="{{ party.party_name }} ">{{ party.party_name }}</option>
                 {% endfor %}
             </select>
             <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="unRSVP!" />
+            <input type="submit " class="btn btn-primary btn-lg " value="unRSVP! " />
             <br>
         </form>
-
-        <style type="text/css">
-        table,
-        th,
-        td {
-
-            border: double;
-            border-color: black;
-        }
-        </style>
-        <br>
-        <br>
     </div>
-    <div style="display:block;">
-        <h1 style="color: black"> Parties You Were Invited to!</h1>
-        <table style="border-radius: 20px" class="table table-primary table-responsive table-hover ">
-            <th style="text-align: center;font-weight: bold">Host</th>
-            <th style="text-align: center;font-weight: bold">Name</th>
-            <th style="text-align: center;font-weight: bold">Description</th>
-            <th style="text-align: center;font-weight: bold">Location</th>
-            <th style="text-align: center;font-weight: bold">Date/Time</th>
-            <th style="text-align: center;font-weight: bold">Status</th>
+    <br>
+    <br>
+    <h3 style=" color: black; text-align: center "> Parties You Were Invited to!</h3>
+    <div style="width: 300px;margin-left:200px">
+        <table style="border-radius: 20px" class="table table-primary table-hover ">
+            <th style="text-align: center ">Host</th>
+            <th style="text-align: center ">Name</th>
+            <th style="text-align: center ">Description</th>
+            <th style="text-align: center ">Location</th>
+            <th style="text-align: center ">Date/Time</th>
+            <th style="text-align: center ">Status</th>
             {% for party in notGoing %}
             <tr>
                 <td>{{party.username_host}}</td>
@@ -86,44 +87,31 @@
             {% endfor %}
         </table>
     </div>
-
-    <div style="display:block;">
-        <h1 style="color: black"> Select a party to RSVP to!</h1>
+    <h3 style=" color: black; text-align: center "> Select a party to RSVP to!</h3>
+    <div style="text-align: center ">
         {% if error %}
-        <p class="error"><strong>Error:</strong> {{error}}</p> 
-        {% endif %}
-
-        <form action="/rsvp" method="POST">
-            <select class="form-control" name="select_party">
+        <p class="error "><strong>Error:</strong> {{error}}</p> {% endif %}
+        <form style="width: 300; margin:0 auto" action="/rsvp " method="POST ">
+            <select class="form-control " name="select_party ">
                 {% for party in notGoing %}
-                <option value="{{ party.party_name }}">{{ party.party_name }}</option>
+                <option value="{{ party.party_name }} ">{{ party.party_name }}</option>
                 {% endfor %}
             </select>
             <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="RSVP!" />
+            <input type="submit " class="btn btn-primary btn-lg" value="RSVP! " />
             <br>
         </form>
-
-        <style type="text/css">
-        table,
-        th,
-        td {
-
-            border: double;
-            border-color: black;
-        }
-        </style>
         <br>
         <br>
     </div>
     <br>
     <br>
-    <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
-    <a href="/profile" class="btn btn-danger btn-sm" role="button">Back to Profile</a>
-    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
-    <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
-    <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
-    <script src="{{url_for('static', filename='css/jquery-3.2.1.min.js')}}"></script>
+    <a href="/logout " class="btn btn-danger btn-sm " role="button ">Logout</a>
+    <a href="/profile " class="btn btn-danger btn-sm " role="button ">Back to Profile</a>
+    <script type="text/javascript " src="../static/css/jquery-3.2.1.min.js "></script>
+    <script src="{{url_for( 'static', filename='css/bootstrap.min.js' )}} "></script>
+    <script type="text/javascript " src="../static/css/bootstrap.min.js "></script>
+    <script src="{{url_for( 'static', filename='css/jquery-3.2.1.min.js' )}} "></script>
 </body>
 
 </html>

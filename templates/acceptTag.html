@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <title>PriCoSha</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
+    <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+</head>
+
+<body>
+    <div style="display:block;">
+        <h1 style="color: black">People want to tag you! Accept/Decline them</h1>
+        <table style="border-radius: 20px " class="table table-primary table-responsive table-hover">
+            <th style="text-align: center;font-weight: bold">Tagger</th>
+            <th style="text-align: center;font-weight: bold">Content Name</th>
+            <th style="text-align: center;font-weight: bold">File Path</th>
+            <th style="text-align: center;font-weight: bold">Public or Private?</th>
+            {% for content in tagDeclinedData %}
+            <tr>
+                <td>{{content.username_tagger}}</td>
+                <td>{{content.content_name}}</td>
+                <td>{{content.file_path}}</td>
+                <td>{{content.public}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div style="display:block;">
+        <h1 style="color: black"> Select content to accept a tag</h1>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p> 
+        {% endif %}
+
+        <form action="/tagAccept" method="POST">
+            <select class="form-control" name="select_content">
+                {% for content in tagDeclinedData %}
+                <option value="{{ content.content_name }}">{{ content.content_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="Accept Tag" />
+            <br>
+        </form>
+
+        <style type="text/css">
+        table,
+        th,
+        td {
+
+            border: double;
+            border-color: black;
+        }
+        </style>
+        <br>
+        <br>
+    </div>
+    <div style="display:block;">
+        <h1 style="color: black">Content you're tagged in</h1>
+        <table style="border-radius: 20px" class="table table-primary table-responsive table-hover ">
+            <th style="text-align: center;font-weight: bold">Tagger</th>
+            <th style="text-align: center;font-weight: bold">Content Name</th>
+            <th style="text-align: center;font-weight: bold">File Path</th>
+            <th style="text-align: center;font-weight: bold">Public or Private?</th>
+            {% for content in tagAcceptedData %}
+            <tr>
+                <td>{{content.username_tagger}}</td>
+                <td>{{content.content_name}}</td>
+                <td>{{content.file_path}}</td>
+                <td>{{content.public}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div style="display:block;">
+        <h1 style="color: black"> Select Content to Remove a Tag </h1>
+        {% if error %}
+        <p class="error"><strong>Error:</strong> {{error}}</p> 
+        {% endif %}
+
+        <form action="/tagDecline" method="POST">
+            <select class="form-control" name="select_content">
+                {% for content in tagAcceptedData %}
+                <option value="{{ content.content_name }}">{{ content.content_name }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <input type="submit" class="btn btn-primary btn-lg" value="Remove Tag" />
+            <br>
+        </form>
+
+        <style type="text/css">
+        table,
+        th,
+        td {
+
+            border: double;
+            border-color: black;
+        }
+        </style>
+        <br>
+        <br>
+    </div>
+    <br>
+    <br>
+    <a href="/logout" class="btn btn-danger btn-sm" role="button">Logout</a>
+    <a href="/profile" class="btn btn-danger btn-sm" role="button">Back to Profile</a>
+    <script type="text/javascript" src="../static/css/jquery-3.2.1.min.js"></script>
+    <script src="{{url_for('static', filename='css/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="../static/css/bootstrap.min.js"></script>
+    <script src="{{url_for('static', filename='css/jquery-3.2.1.min.js')}}"></script>
+</body>
+
+</html>
