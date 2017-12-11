@@ -231,7 +231,7 @@ def addFriendtoGroup():
 	selectedGroup = request.form.get('select_group')
 	memFirst = request.form['memfname']
 	memLast = request.form['memlname']
-	memUsername = request.form['memUsername']
+	memFormUsername = request.form['memUsername']
 	cursor = conn.cursor();
 
 	#select all friend groups that the user owns
@@ -239,44 +239,51 @@ def addFriendtoGroup():
 	cursor.execute(queryAllGroups, (username))
 	dataGroups = cursor.fetchall()
 
-	#check that there is one person with this name
+	# cursor = conn.cursor()
+	# #count names with first and last name
+	# queryNames = 'SELECT count(*) FROM Person WHERE first_name = %s and last_name = %s'
+	# cursor.execute(queryNames,(memFirst, memLast))
+	# count = cursor.fetchall()
+	# cursor.close()
 	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
 	cursor.execute(queryFindMemUsername, (memFirst, memLast))
-	friendUsername = cursor.fetchall()
+	memUsername = cursor.fetchall()
 
-	if( friendUsername > 1):
-		error = "More than one person with that name: %s. Please provide the username as well" % (friendUsername)
-		return render_template('addFriend.html', error=error, groups=dataGroups)
-
-	queryAlreadyInGroup = "SELECT * FROM member WHERE username = %s AND group_name = %s"
-	cursor.execute(queryAlreadyInGroup, (friendUsername, selectedGroup))
-	data = cursor.fetchall()
-
-	if(data):
-		error = "This person is already in the group, unless they have a different username: %s" % (friendUsername)
-		return redirect(url_for('addFriend', error=error))
-
-	if(memUsername):
+	if(len(memUsername) == 1):
+		memUsername = memUsername[0].get('username')
 		queryAddFriend = "INSERT INTO Member(username, group_name, username_creator) VALUES(%s, %s, %s)"
 		cursor.execute(queryAddFriend, (memUsername, selectedGroup, username))
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('addFriend'))
 
-	else:
+	if(memFormUsername):
 		queryAddFriend = "INSERT INTO Member(username, group_name, username_creator) VALUES(%s, %s, %s)"
-		cursor.execute(queryAddFriend, (friendUsername, selectedGroup, username))
+		cursor.execute(queryAddFriend, (memFormUsername, selectedGroup, username))
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('addFriend'))
 
+	else:
+		error = "More than one person with that name: %s. Please provide the username as well" % (memUsername)
+		return render_template('addFriend.html', error=error, groups=dataGroups)
+
+#	queryAlreadyInGroup = "SELECT * FROM member WHERE username = %s AND group_name = %s"
+#	cursor.execute(queryAlreadyInGroup, (friendUsername, selectedGroup))
+#	data = cursor.fetchall()
+
+#	if(data):
+#		error = "This person is already in the group, unless they have a different username: %s" % (friendUsername)
+#		return redirect(url_for('addFriend', error=error))
+#check that there is one person with this name
+
 @app.route('/addFriendGroup', methods=['GET','POST'])
 def addFriendGroup():
 	username = session['username']
-	cursor = conn.cursor();
 	friendGroupName = request.form['groupName']
 	mFirstName = request.form['memfname']
 	mLastName = request.form['memlname']
+	cursor = conn.cursor();
 	
 	queryFindMemUsername = "SELECT username FROM Person	WHERE first_name = %s AND last_name = %s"
 	cursor.execute(queryFindMemUsername, (mFirstName, mLastName))
@@ -418,7 +425,7 @@ def tag():
 	username = session['username']
 	cursor = conn.cursor();
 
-	queryMyContent = "SELECT content_name FROM Content WHERE username = %s"
+	queryMyContent = "SELECT content_name, id FROM Content WHERE username = %s"
 	cursor.execute(queryMyContent, (username))
 	data = cursor.fetchall()
 
@@ -431,15 +438,12 @@ def tagPeople():
 	username = session['username']
 	selectedContent = request.form.get('select_content')
 	taggeeUsername = request.form['memUsername']
+	conID = request.form['conID']
 	cursor = conn.cursor();
 
 	queryAlreadyTagged = "SELECT * FROM Tag JOIN Content ON Tag.id = Content.id WHERE content_name = %s AND  Tag.username_taggee = %s"
 	cursor.execute(queryAlreadyTagged, (selectedContent, taggeeUsername))
 	data = cursor.fetchall()
-
-	queryContentID = "SELECT id FROM Content WHERE content_name = %s AND username = %s"
-	cursor.execute(queryContentID, (selectedContent, username))
-	contentID = cursor.fetchall()
 
 	if(data):
 		error = "This person was already invited"
@@ -447,14 +451,14 @@ def tagPeople():
 
 	elif(username == taggeeUsername):
 		querySendTag = "INSERT INTO Tag(id, username_tagger, username_taggee, status) VALUES(%s, %s, %s, %s)"
-		cursor.execute(querySendTag, (contentID, username, taggeeUsername, True))
+		cursor.execute(querySendTag, (conID, username, taggeeUsername, True))
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('tag'))
 
 	else:
 		querySendTag = "INSERT INTO Tag(id, username_tagger, username_taggee, status) VALUES(%s, %s, %s, %s)"
-		cursor.execute(querySendTag, (contentID, username, taggeeUsername, False))
+		cursor.execute(querySendTag, (conID, username, taggeeUsername, False))
 		conn.commit()
 		cursor.close()
 		return redirect(url_for('tag'))
@@ -464,11 +468,11 @@ def viewTags():
 	username = session['username']
 	cursor = conn.cursor();
 
-	queryDeclined = "SELECT username_tagger, content_name, file_path, public FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
+	queryDeclined = "SELECT Tag.id, username_tagger, content_name, file_path, public, status FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
 	cursor.execute(queryDeclined, (username, False))
 	declinedData = cursor.fetchall()
 
-	queryAccepted = "SELECT username_tagger, content_name, file_path, public FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
+	queryAccepted = "SELECT Tag.id, username_tagger, content_name, file_path, public, status FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND status = %s"
 	cursor.execute(queryAccepted, (username, True))
 	acceptedData = cursor.fetchall()
 
@@ -476,35 +480,60 @@ def viewTags():
 	cursor.close()
 	return render_template('acceptTag.html', tagAcceptedData=acceptedData, tagDeclinedData=declinedData)
 
-@app.route('/tagAccept', methods=['GET','POST'])
-def tagAccept():
-	username = session['username']
-	selectedContent = request.form.get('select_content')
-	cursor = conn.cursor();
+# @app.route('/tagAccept', methods=['GET','POST'])
+# def tagAccept():
+# 	username = session['username']
+# 	selectedContent = request.form.get('select_content')
+# 	conID = request.form['conID']
+# 	cursor = conn.cursor();
 
-	queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
-	cursor.execute(queryContentID, (username, selectedContent))
-	contentID = cursor.fetchall()
-
-	#ensure person exists and get their username
-	queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
-	cursor.execute(queryUpdateTag, (True, username, contentID))
-	conn.commit()
-	cursor.close()
-	return redirect(url_for('acceptTag'))
+# 	#ensure person exists and get their username
+# 	queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
+# 	cursor.execute(queryUpdateTag, (True, username, conID))
+# 	conn.commit()
+# 	cursor.close()
+# 	return redirect(url_for('viewTags'))
 
 @app.route('/tagDecline', methods=['GET','POST'])
 def tagDecline():
 	username = session['username']
 	selectedContent = request.form.get('select_content')
+	conID = request.form['conID']
 	cursor = conn.cursor();
 
-	queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
-	cursor.execute(queryContentID, (username, selectedContent))
-	contentID = cursor.fetchall()
+	deleteTag = "DELETE FROM Tag WHERE username_taggee = %s AND id = %s"
+	cursor.execute(deleteTag, (username, conID))
+	conn.commit()
+	cursor.close()
+	return redirect(url_for('viewTags'))
 
-	deleteTag = "DELETE FROM Tag WHERE username_taggee = %s AND content_id = %s"
-	cursor.execute(deleteTag, (username, contentID))
+@app.route('/tagAccept', methods=['GET','POST'])
+def tagAccept():
+	username = session['username']
+	selectedContent = request.form.get('select_content')
+	tagoption=request.form['tagoption']
+
+	if tagoption =='accept':
+		cursor = conn.cursor();
+
+		queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
+		cursor.execute(queryContentID, (username, selectedContent))
+		contentID = cursor.fetchall()
+
+	#ensure person exists and get their username
+		queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
+		cursor.execute(queryUpdateTag, (True, username, contentID))
+
+	if tagoption =='decline':
+		cursor = conn.cursor();
+
+		queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
+		cursor.execute(queryContentID, (username, selectedContent))
+		contentID = cursor.fetchall()
+
+		deleteTag = "DELETE FROM Tag WHERE username_taggee = %s AND id = %s"
+		cursor.execute(deleteTag, (username, contentID))
+
 	conn.commit()
 	cursor.close()
 	return redirect(url_for('acceptTag'))

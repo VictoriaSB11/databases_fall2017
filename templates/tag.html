@@ -24,12 +24,13 @@
         <form action="/tagPeople" method="POST">
             <select class="form-control" name="select_content">
                 {% for content in contentItems %}
-                <option value="{{ content.content_name }}">{{ content.content_name }}</option>
+                <option value="{{ content.content_name }}">{{content.id}}, {{ content.content_name }}</option>
                 {% endfor %}
             </select>
             <br>
             <h3 style="color: black"> Tag a User </h3>
             <br>
+            <input type=" text" class="form-control" name="conID" placeholder="Confirm content ID number" required />
             <input type=" text" class="form-control" name="memUsername" placeholder="Member Username" required />
             <br>
             <br>

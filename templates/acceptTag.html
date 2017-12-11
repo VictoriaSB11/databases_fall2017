@@ -13,21 +13,22 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/main.css') }}">
     <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 </head>
-
+<style>tbody{overflow: scroll;}</style>
 <body>
     <div style="display:block;">
         <h1 style="color: black">People want to tag you! Accept/Decline them</h1>
-        <table style="border-radius: 20px " class="table table-primary table-responsive table-hover">
+        <table style="border-radius: 20px; width:600px; margin-left:300px" class="table table-primary table-hover">
             <th style="text-align: center;font-weight: bold">Tagger</th>
             <th style="text-align: center;font-weight: bold">Content Name</th>
             <th style="text-align: center;font-weight: bold">File Path</th>
             <th style="text-align: center;font-weight: bold">Public or Private?</th>
+            <th style="text-align: center;font-weight: bold">ID</th>
             {% for content in tagDeclinedData %}
-            <tr>
-                <td>{{content.username_tagger}}</td>
+            <tr><td>{{content.username_tagger}}</td>
                 <td>{{content.content_name}}</td>
                 <td>{{content.file_path}}</td>
                 <td>{{content.public}}</td>
+                <td>{{content.id}}</td>
             </tr>
             {% endfor %}
         </table>
@@ -45,7 +46,8 @@
                 {% endfor %}
             </select>
             <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="Accept Tag" />
+            <input type=" text" class="form-control" name="conID" placeholder="Confirm content ID number" required />
+            <input type="submit" class="btn btn-primary btn-lg" role="button" value="Accept Tag" />
             <br>
         </form>
 
@@ -63,17 +65,18 @@
     </div>
     <div style="display:block;">
         <h1 style="color: black">Content you're tagged in</h1>
-        <table style="border-radius: 20px" class="table table-primary table-responsive table-hover ">
-            <th style="text-align: center;font-weight: bold">Tagger</th>
+        <table style="border-radius: 20px; width:600px; margin-left:300px" class="table table-primary table-hover">
             <th style="text-align: center;font-weight: bold">Content Name</th>
             <th style="text-align: center;font-weight: bold">File Path</th>
             <th style="text-align: center;font-weight: bold">Public or Private?</th>
+            <th style="text-align: center;font-weight: bold">ID</th>
             {% for content in tagAcceptedData %}
             <tr>
                 <td>{{content.username_tagger}}</td>
                 <td>{{content.content_name}}</td>
                 <td>{{content.file_path}}</td>
                 <td>{{content.public}}</td>
+                <td>{{content.id}}</td>
             </tr>
             {% endfor %}
         </table>
@@ -92,7 +95,8 @@
                 {% endfor %}
             </select>
             <br>
-            <input type="submit" class="btn btn-primary btn-lg" value="Remove Tag" />
+            <input type=" text" class="form-control" name="conID" placeholder="Confirm content ID number" required />
+            <input type="submit" class="btn btn-primary btn-lg" role="button" value="Remove Tag" />
             <br>
         </form>
 
