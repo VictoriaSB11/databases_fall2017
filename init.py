@@ -238,6 +238,7 @@ def addFriendtoGroup():
 	queryAllGroups = 'SELECT DISTINCT group_name FROM FriendGroup WHERE username = %s'
 	cursor.execute(queryAllGroups, (username))
 	dataGroups = cursor.fetchall()
+	cursor.close()
 
 	# cursor = conn.cursor()
 	# #count names with first and last name
@@ -511,32 +512,14 @@ def tagDecline():
 def tagAccept():
 	username = session['username']
 	selectedContent = request.form.get('select_content')
-	tagoption=request.form['tagoption']
+	conID = request.form['conID']
+	cursor = conn.cursor();
 
-	if tagoption =='accept':
-		cursor = conn.cursor();
-
-		queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
-		cursor.execute(queryContentID, (username, selectedContent))
-		contentID = cursor.fetchall()
-
-	#ensure person exists and get their username
-		queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
-		cursor.execute(queryUpdateTag, (True, username, contentID))
-
-	if tagoption =='decline':
-		cursor = conn.cursor();
-
-		queryContentID = 'SELECT Tag.id FROM Tag JOIN Content ON Tag.id = Content.id WHERE username_taggee = %s AND content_name = %s'
-		cursor.execute(queryContentID, (username, selectedContent))
-		contentID = cursor.fetchall()
-
-		deleteTag = "DELETE FROM Tag WHERE username_taggee = %s AND id = %s"
-		cursor.execute(deleteTag, (username, contentID))
-
+	queryUpdateTag = "UPDATE Tag SET status = %s WHERE username_taggee = %s AND id = %s"
+	cursor.execute(queryUpdateTag, (True, username, conID))
 	conn.commit()
 	cursor.close()
-	return redirect(url_for('acceptTag'))
+	return redirect(url_for('viewTags'))
 
 @app.route('/profile')
 def backProfile():
